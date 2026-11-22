@@ -1,0 +1,54 @@
+# Copy to ~/.config/situation-hub/config.yaml (mode 600) and fill in real values there only.
+# Freshness: many phone integrations only write a new timestamp when the state changes, so
+# change-driven signals (wifi, gps_zone, ping) usually need stale_after_minutes in hours.
+home_assistant:
+  url: http://127.0.0.1:8123
+  token_env: HASS_TOKEN
+signals:
+  - id: phone_wifi
+    kind: wifi
+    domain: phone_network
+    entity_id: sensor.example_phone_ssid
+    home_values: [ExampleWiFi, ExampleWiFi_5G]
+    prob_given_home: 0.90
+    prob_given_away: 0.08
+    stale_after_minutes: 20
+  - id: living_room_tv
+    kind: media_playing
+    domain: home_media
+    entity_id: media_player.example_tv
+    prob_given_home: 0.55
+    prob_given_away: 0.03
+  - id: phone_gps
+    kind: gps_zone
+    domain: phone_location
+    entity_id: device_tracker.example_phone
+    home_values: [home]
+    prob_given_home: 0.85
+    prob_given_away: 0.08
+  - id: phone_ping
+    kind: ping
+    domain: phone_network
+    entity_id: binary_sensor.example_phone_ping
+    prob_given_home: 0.60
+    prob_given_away: 0.10
+  - id: asleep
+    kind: asleep
+    domain: sleep
+    entity_id: binary_sensor.example_asleep
+    prob_given_home: 0.70
+    prob_given_away: 0.10
+presence:
+  prior_home: 0.6
+  home_threshold: 0.8
+  away_threshold: 0.2
+  home_hold_minutes: 2
+  away_hold_minutes: 15
+devices:
+  - entity_id: climate.example_office
+    label: AC (office)
+    tier: 2
+notify:
+  kind: example_notifier
+  chat_id_env: OWNER_CHAT_ID
+database: ~/.local/share/situation-hub/situation.db
